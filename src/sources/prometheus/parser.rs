@@ -36,7 +36,7 @@ pub(super) fn parse_text_with_overrides(
 }
 
 #[cfg(feature = "sources-prometheus-remote-write")]
-pub(super) fn parse_request(request: proto::WriteRequest) -> Result<Vec<Event>, ParserError> {
+pub(crate) fn parse_request(request: proto::WriteRequest) -> Result<Vec<Event>, ParserError> {
     vector_lib::prometheus::parser::parse_request(request)
         .map(|group| reparse_groups(group, vec![], false))
 }

@@ -1,0 +1,140 @@
+#                                    __   __  __
+#                                    \ \ / / / /
+#                                     \ V / / /
+#                                      \_/  \/
+#
+#                                    V E C T O R
+#                                   Configuration
+#
+# ------------------------------------------------------------------------------
+# Website: https://vector.dev
+# Docs: https://vector.dev/docs
+# Chat: https://chat.vector.dev
+# ------------------------------------------------------------------------------
+
+# Change this to use a non-default directory for Vector data storage:
+# data_dir: "/var/lib/vector"
+
+# Random Syslog-formatted logs
+sources:
+  mqtt-metrics:
+    type: "mqtt"
+    host: localhost
+    port: 1883
+    client_id: mqtt3
+    topic: vector
+    user: vector
+    password: "f0rmat[]\\"
+    share:
+      enabled: true
+      group: metrics
+      concurrency: 16
+
+  mqtt-logging:
+    type: "mqtt_logging"
+    host: localhost
+    port: 1883
+    client_id: mqtt2
+    topic: alerts
+    user: alert
+    password: "f0rmat[]\\"
+    share:
+      enabled: true
+      group: alerts
+      concurrency: 16
+
+  mqtt-events:
+    type: "mqtt_logging"
+    host: localhost
+    port: 1883
+    client_id: events
+    topic: events
+    user: events
+    password: "f0rmat[]\\"
+    share:
+      enabled: true
+      group: events
+      concurrency: 16
+    decoding:
+      codec: "json"
+
+transforms:
+  extract-alert-from-message:
+    type: remap
+    inputs:
+      - mqtt-logging
+    source: ". = parse_json!(.message) # sets `.` to an array of objects"
+
+  events-aggregate:
+    type: dedupe
+    inputs:
+      - mqtt-events
+    cache:
+      num_events: 100
+
+
+# Print parsed logs to stdout
+sinks:
+  print:
+    type: "console"
+    inputs:
+      - extract-alert-from-message
+      - mqtt-logging
+      - mqtt-metrics
+      - mqtt-events
+    encoding:
+      codec: "json"
+
+  alertmanager:
+    type: http
+    encoding:
+      codec: json
+    method: post
+    inputs:
+      - extract-alert-from-message
+    uri: http://localhost:9093/api/v2/alerts
+    healthcheck:
+      enabled: false
+    request:
+      concurrency: adaptive
+      headers:
+        "Accept": "application/json"
+        "Content-Type": "application/json"
+
+
+  prometheus_remote_write_sink:
+    endpoint: http://localhost:8428/api/v1/write
+    healthcheck:
+      enabled: false
+    inputs:
+      - mqtt-metrics
+    type: prometheus_remote_write
+    batch:
+      aggregate: false
+
+
+  event-to-elastic-search:
+    type: "elasticsearch"
+    api_version: v8
+    inputs:
+      - events-aggregate
+    acknowledgements:
+      enabled: true
+    endpoints:
+      - https://localhost:9200/
+    request:
+      concurrency: adaptive
+      retry_attempts: 3
+      headers:
+        "Accept": "application/json"
+    bulk:
+      index: "event-%Y-%m-%d"
+    auth:
+      user: elastic
+      password: l3RlYruBylBVB-w4iXHn
+      strategy: basic
+    healthcheck:
+      enabled: false
+    tls:
+      verify_certificate: false
+      verify_hostname: false
