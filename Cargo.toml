@@ -47,6 +47,10 @@ path = "tests/e2e/mod.rs"
 [profile.release]
 debug = false # Do not include debug symbols in the executable.
 
+[profile.dev]
+incremental = true
+debug = true
+
 [profile.bench]
 debug = true
 
@@ -550,6 +554,7 @@ sources-logs = [
   "sources-kubernetes_logs",
   "sources-logstash",
   "sources-nats",
+  "sources-mqtt_logging",
   "sources-opentelemetry",
   "sources-pulsar",
   "sources-file_descriptor",
@@ -573,6 +578,8 @@ sources-metrics = [
   "sources-prometheus",
   "sources-static_metrics",
   "sources-statsd",
+  "sources-mqtt",
+  "sources-nats_metrics",
   "sources-vector",
 ]
 
@@ -604,6 +611,9 @@ sources-kafka = ["dep:rdkafka"]
 sources-kubernetes_logs = ["vector-lib/file-source", "kubernetes", "transforms-reduce"]
 sources-logstash = ["sources-utils-net-tcp", "tokio-util/net"]
 sources-mongodb_metrics = ["dep:mongodb"]
+sources-mqtt = ["dep:rumqttc"]
+sources-mqtt_logging = ["dep:rumqttc"]
+sources-nats_metrics = ["dep:async-nats", "dep:nkeys"]
 sources-nats = ["dep:async-nats", "dep:nkeys"]
 sources-nginx_metrics = ["dep:nom"]
 sources-opentelemetry = ["dep:hex", "vector-lib/opentelemetry", "dep:prost", "dep:prost-types", "sources-http_server", "sources-utils-http", "sources-utils-http-headers", "sources-vector"]
@@ -894,7 +904,7 @@ kafka-integration-tests = ["sinks-kafka", "sources-kafka"]
 logstash-integration-tests = ["docker", "sources-logstash"]
 loki-integration-tests = ["sinks-loki"]
 mongodb_metrics-integration-tests = ["sources-mongodb_metrics"]
-mqtt-integration-tests = ["sinks-mqtt"]
+mqtt-integration-tests = ["sinks-mqtt", "sources-mqtt"]
 nats-integration-tests = ["sinks-nats", "sources-nats"]
 nginx-integration-tests = ["sources-nginx_metrics"]
 opentelemetry-integration-tests = ["sources-opentelemetry", "dep:prost"]
