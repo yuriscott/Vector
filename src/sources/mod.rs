@@ -87,7 +87,17 @@ pub mod syslog;
 #[cfg(feature = "sources-vector")]
 pub mod vector;
 
+#[cfg(feature = "sources-mqtt")]
+pub mod mqtt;
+
+#[cfg(feature = "sources-nats_metrics")]
+pub mod nats_metrics;
+
+#[cfg(feature = "sources-mqtt_logging")]
+pub mod mqtt_logging;
+
 pub mod util;
+
 
 pub use vector_lib::source::Source;
 

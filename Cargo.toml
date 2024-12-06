@@ -47,6 +47,10 @@ path = "tests/e2e/mod.rs"
 [profile.release]
 debug = false # Do not include debug symbols in the executable.
 
+[profile.dev]
+incremental = true
+debug = true
+
 [profile.bench]
 debug = true
 
@@ -206,11 +210,11 @@ azure_storage = { version = "0.17", default-features = false, optional = true }
 azure_storage_blobs = { version = "0.17", default-features = false, optional = true }
 
 # OpenDAL
-opendal = {version = "0.45", default-features = false, features = ["native-tls", "services-webhdfs"], optional = true}
+opendal = { version = "0.45", default-features = false, features = ["native-tls", "services-webhdfs"], optional = true }
 
 # Tower
 tower = { version = "0.4.13", default-features = false, features = ["buffer", "limit", "retry", "timeout", "util", "balance", "discover"] }
-tower-http = { version = "0.4.4", default-features = false, features = ["decompression-gzip", "trace"]}
+tower-http = { version = "0.4.4", default-features = false, features = ["decompression-gzip", "trace"] }
 # Serde
 serde.workspace = true
 serde-toml-merge = { version = "0.3.6", default-features = false }
@@ -292,7 +296,7 @@ hyper = { version = "0.14.28", default-features = false, features = ["client", "
 hyper-openssl = { version = "0.9.2", default-features = false }
 hyper-proxy = { version = "0.9.1", default-features = false, features = ["openssl-tls"] }
 indexmap.workspace = true
-infer = { version = "0.15.0", default-features = false, optional = true}
+infer = { version = "0.15.0", default-features = false, optional = true }
 indoc = { version = "2.0.5", default-features = false }
 inventory = { version = "0.3.15", default-features = false }
 ipnet = { version = "2", default-features = false, optional = true, features = ["serde", "std"] }
@@ -335,7 +339,7 @@ strip-ansi-escapes = { version = "0.2.0", default-features = false }
 syslog = { version = "6.1.1", default-features = false, optional = true }
 tikv-jemallocator = { version = "0.5.4", default-features = false, features = ["unprefixed_malloc_on_supported_platforms"], optional = true }
 tokio-postgres = { version = "0.7.10", default-features = false, features = ["runtime", "with-chrono-0_4"], optional = true }
-tokio-tungstenite = {version = "0.20.1", default-features = false, features = ["connect"], optional = true}
+tokio-tungstenite = { version = "0.20.1", default-features = false, features = ["connect"], optional = true }
 toml.workspace = true
 tonic = { version = "0.10", optional = true, default-features = false, features = ["transport", "codegen", "prost", "tls", "tls-roots", "gzip"] }
 hickory-proto = { version = "0.24.1", default-features = false, features = ["dnssec"], optional = true }
@@ -381,7 +385,7 @@ similar-asserts = "1.5.0"
 proptest.workspace = true
 quickcheck = "1.0.3"
 reqwest = { version = "0.11", features = ["json"] }
-rstest = {version = "0.19.0"}
+rstest = { version = "0.19.0" }
 tempfile = "3.10.1"
 test-generator = "0.3.1"
 tokio = { version = "1.37.0", features = ["test-util"] }
@@ -520,6 +524,7 @@ sources-logs = [
   "sources-kubernetes_logs",
   "sources-logstash",
   "sources-nats",
+  "sources-mqtt_logging",
   "sources-opentelemetry",
   "sources-pulsar",
   "sources-file-descriptor",
@@ -541,6 +546,8 @@ sources-metrics = [
   "sources-postgresql_metrics",
   "sources-prometheus",
   "sources-statsd",
+  "sources-mqtt",
+  "sources-nats_metrics",
   "sources-vector",
 ]
 
@@ -561,7 +568,7 @@ sources-file-descriptor = ["tokio-util/io"]
 sources-fluent = ["dep:base64", "sources-utils-net-tcp", "tokio-util/net", "dep:rmpv", "dep:rmp-serde", "dep:serde_bytes"]
 sources-gcp_pubsub = ["gcp", "dep:h2", "dep:prost-types", "protobuf-build", "dep:tonic"]
 sources-heroku_logs = ["sources-utils-http", "sources-utils-http-query", "sources-http_server"]
-sources-host_metrics =  ["heim/cpu", "heim/host", "heim/memory", "heim/net"]
+sources-host_metrics = ["heim/cpu", "heim/host", "heim/memory", "heim/net"]
 sources-http_client = ["sources-utils-http-client"]
 sources-http_server = ["sources-utils-http", "sources-utils-http-query"]
 sources-internal_logs = []
@@ -571,6 +578,9 @@ sources-kafka = ["dep:rdkafka"]
 sources-kubernetes_logs = ["vector-lib/file-source", "kubernetes", "transforms-reduce"]
 sources-logstash = ["sources-utils-net-tcp", "tokio-util/net"]
 sources-mongodb_metrics = ["dep:mongodb"]
+sources-mqtt = ["dep:rumqttc"]
+sources-mqtt_logging = ["dep:rumqttc"]
+sources-nats_metrics = ["dep:async-nats", "dep:nkeys"]
 sources-nats = ["dep:async-nats", "dep:nkeys"]
 sources-nginx_metrics = ["dep:nom"]
 sources-opentelemetry = ["dep:hex", "vector-lib/opentelemetry", "dep:prost-types", "sources-http_server", "sources-utils-http", "sources-vector"]
@@ -580,7 +590,7 @@ sources-prometheus-scrape = ["sinks-prometheus", "sources-utils-http-client", "v
 sources-prometheus-remote-write = ["sinks-prometheus", "sources-utils-http", "vector-lib/prometheus"]
 sources-prometheus-pushgateway = ["sinks-prometheus", "sources-utils-http", "vector-lib/prometheus"]
 sources-pulsar = ["dep:apache-avro", "dep:pulsar"]
-sources-redis= ["dep:redis"]
+sources-redis = ["dep:redis"]
 sources-socket = ["sources-utils-net", "tokio-util/net"]
 sources-splunk_hec = ["dep:roaring"]
 sources-statsd = ["sources-utils-net", "tokio-util/net"]
@@ -868,7 +878,7 @@ kafka-integration-tests = ["sinks-kafka", "sources-kafka"]
 logstash-integration-tests = ["docker", "sources-logstash"]
 loki-integration-tests = ["sinks-loki"]
 mongodb_metrics-integration-tests = ["sources-mongodb_metrics"]
-mqtt-integration-tests = ["sinks-mqtt"]
+mqtt-integration-tests = ["sinks-mqtt", "sources-mqtt"]
 nats-integration-tests = ["sinks-nats", "sources-nats"]
 nginx-integration-tests = ["sources-nginx_metrics"]
 opentelemetry-integration-tests = ["sources-opentelemetry"]
