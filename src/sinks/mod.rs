@@ -80,6 +80,8 @@ pub mod mezmo;
 pub mod mqtt;
 #[cfg(feature = "sinks-nats")]
 pub mod nats;
+#[cfg(feature = "sinks-nats_metrics")]
+pub mod nats_metrics;
 #[cfg(feature = "sinks-new_relic")]
 pub mod new_relic;
 #[cfg(feature = "sinks-webhdfs")]

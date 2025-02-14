@@ -23,37 +23,40 @@ api:
 
 # Random Syslog-formatted logs
 sources:
+  prometheus_remote_write:
+    type: prometheus_remote_write
+    address: 0.0.0.0:19090
+
   nats-metrics:
     type: "nats_metrics"
     connection_name: nats
-    url: nats://localhost
-    subject: metrics.>
+    url: nats://localhost:4222
+    subject: metrics
     queue: queue
     concurrency: 16
     subscriber_capacity: 65536
 
-#transforms:
-#  metric-aggregate:
-#    type: aggregate
-#    inputs:
-#      - nats-metrics
-
 # Print parsed logs to stdout
 sinks:
-#  print:
-#    type: "console"
-#    inputs:
-#      - metric-aggregate
-#    encoding:
-#      codec: "json"
-
-  prometheus_remote_write_sink:
-    endpoint: http://localhost:8428/api/v1/write
-    healthcheck:
-      enabled: false
+  print:
+    type: "console"
     inputs:
       - nats-metrics
-    type: prometheus_remote_write
+    encoding:
+      codec: "json"
+
+  nats_metrics_sink:
+    type: "nats_metrics"
+    inputs:
+      - prometheus_remote_write
+    connection_name: "nats_metrics_sink"
+    subject: metrics
+    url: nats://localhost:4222
+    request:
+      concurrency: 64
+    jetstream: true
     batch:
       aggregate: false
-
+      batch_settings:
+        max_bytes: 1000000
+        max_events: 1024

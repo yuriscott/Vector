@@ -770,7 +770,8 @@ sinks-metrics = [
   "sinks-sematext",
   "sinks-statsd",
   "sinks-vector",
-  "sinks-splunk_hec"
+  "sinks-splunk_hec",
+  "sinks-nats_metrics",
 ]
 
 sinks-amqp = ["lapin"]
@@ -810,6 +811,7 @@ sinks-mezmo = []
 sinks-loki = ["loki-logproto"]
 sinks-mqtt = ["dep:rumqttc"]
 sinks-nats = ["dep:async-nats", "dep:nkeys"]
+sinks-nats_metrics = ["dep:async-nats", "dep:nkeys"]
 sinks-new_relic_logs = ["sinks-http"]
 sinks-new_relic = []
 sinks-opentelemetry = ["sinks-http"]
