@@ -15,6 +15,8 @@ pub enum NatsConfigError {
     TlsMissingCert,
     #[snafu(display("NATS Credentials file error"))]
     CredentialsFileError { source: std::io::Error },
+    #[snafu(display("NATS Credentials file error"))]
+    CommonConfigError,
 }
 
 /// Configuration of the authentication strategy when interacting with NATS.
