@@ -50,7 +50,10 @@ pub struct NatsSourceConfig {
     /// The URL takes the form of `nats://server:port`.
     /// If the port is not specified it defaults to 4222.
     #[configurable(metadata(docs::examples = "nats://demo.nats.io"))]
-    #[configurable(metadata(docs::examples = "nats://127.0.0.1:4242"))]
+    #[configurable(metadata(docs::examples = "nats://127.0.0.1:4242,"))]
+    #[configurable(metadata(
+        docs::examples = "nats://localhost:4222,nats://localhost:5222,nats://localhost:6222"
+    ))]
     url: String,
 
     /// A [name][nats_connection_name] assigned to the NATS connection.
