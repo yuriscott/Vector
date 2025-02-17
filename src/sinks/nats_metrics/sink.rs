@@ -137,7 +137,6 @@ impl BatchData<NatsMetricsEvent> for EventCollection {
 
 pub(super) struct NatsMetricsSink {
     request: TowerRequestConfig<NatsTowerRequestConfigDefaults>,
-    // encoder: Encoder<()>,
     publisher: Arc<NatsPublisher>,
     subject: Template,
     aggregate: bool,
@@ -166,9 +165,6 @@ impl NatsMetricsSink {
 
     pub(super) async fn new(config: NatsMetricsSinkConfig) -> Result<Self, NatsError> {
         let publisher = Arc::new(config.publisher().await?);
-        // let transformer = config.encoding.transformer();
-        // let serializer = config.encoding.build().context(EncodingSnafu)?;
-        // let encoder = Encoder::<()>::new(serializer);
         let request = config.request.clone();
         let subject = config.subject.clone();
         let default_namespace = config.default_namespace.clone();

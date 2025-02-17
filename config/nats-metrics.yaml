@@ -31,7 +31,7 @@ sources:
     type: "nats_metrics"
     connection_name: nats
     url: nats://localhost:4222
-    subject: metrics
+    subject: metrics.>
     queue: queue
     concurrency: 16
     subscriber_capacity: 65536
@@ -50,7 +50,7 @@ sinks:
     inputs:
       - prometheus_remote_write
     connection_name: "nats_metrics_sink"
-    subject: metrics
+    subject: metrics.{{ tags.cluster }}
     url: nats://localhost:4222
     request:
       concurrency: 64
