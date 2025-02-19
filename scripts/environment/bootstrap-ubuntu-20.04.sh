@@ -100,9 +100,16 @@ fi
 
 # Docker.
 if ! [ -x "$(command -v docker)" ]; then
-    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+#    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+#    add-apt-repository \
+#        "deb [arch=$(dpkg --print-architecture)] https://download.docker.com/linux/ubuntu \
+#        xenial \
+#        stable"
+    curl -fsSL https://mirrors.aliyun.com/docker-ce/linux/ubuntu/gpg | apt-key add -
+
+    # 添加阿里云的 Docker APT 软件源
     add-apt-repository \
-        "deb [arch=$(dpkg --print-architecture)] https://download.docker.com/linux/ubuntu \
+        "deb [arch=$(dpkg --print-architecture)] https://mirrors.aliyun.com/docker-ce/linux/ubuntu \
         xenial \
         stable"
     # Install those new things
