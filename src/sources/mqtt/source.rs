@@ -18,10 +18,11 @@ use crate::{
     shutdown::ShutdownSignal,
     SourceSender,
 };
+use crate::common::http::ErrorMessage;
 use crate::event::Event;
 use crate::internal_events::DecoderFramingError;
 use crate::sources::prometheus::parser::parse_request;
-use crate::sources::util::{decode, ErrorMessage};
+use crate::sources::util::{decode};
 
 use super::config::ConfigurationError;
 

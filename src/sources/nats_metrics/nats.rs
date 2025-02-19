@@ -21,10 +21,10 @@ use vector_lib::configurable::configurable_component;
 use vector_lib::internal_event::{ByteSize, BytesReceived, InternalEventHandle as _, Protocol};
 use vector_lib::lookup::{lookup_v2::OptionalValuePath, owned_value_path};
 use vector_lib::prometheus::parser::proto;
-
+use crate::common::http::ErrorMessage;
 use crate::internal_events::DecoderFramingError;
 use crate::sources::prometheus::parser::parse_request;
-use crate::sources::util::{decode, ErrorMessage};
+use crate::sources::util::{decode};
 
 #[derive(Debug, Snafu)]
 enum BuildError {

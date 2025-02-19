@@ -244,7 +244,7 @@ impl MqttSourceConfig {
             return Err(ConfigurationError::InvalidClientId).context(ConfigurationSnafu);
         }
         let mut topic = self.topic.clone();
-        let tls = MaybeTlsSettings::from_config(&self.tls, false).context(TlsSnafu)?;
+        let tls = MaybeTlsSettings::from_config(self.tls.as_ref(), false).context(TlsSnafu)?;
         let mut options = MqttOptions::new(client_id, &self.host, self.port);
         options.set_keep_alive(Duration::from_secs(self.keep_alive.into()));
         options.set_inflight(65535);
