@@ -17,6 +17,8 @@ sed -i -e 's@//ports.ubuntu.com/\? @//ports.ubuntu.com/ubuntu-ports @g' \
             -e 's@//ports.ubuntu.com@//mirrors.ustc.edu.cn@g' \
             /etc/apt/sources.list
 
+sed -i 's@//security.ubuntu.com@//mirrors.ustc.edu.cn@g' /etc/apt/sources.list
+
 apt-get update --yes
 
 apt-get install --yes \

@@ -7,6 +7,9 @@ ENV DEBIAN_FRONTEND=noninteractive \
     LC_ALL=en_US.UTF-8 \
     CROSS_DOCKER_IN_DOCKER=true
 
+
+RUN export https_proxy=http://10.213.3.99:7890 http_proxy=http://10.213.3.99:7890 all_proxy=socks5://10.213.3.99:7890
+
 # Container junk
 RUN echo $TZ > /etc/timezone
 
@@ -20,7 +23,8 @@ COPY scripts/Gemfile scripts/Gemfile.lock \
     /git/vectordotdev/vector/scripts/
 COPY rust-toolchain.toml \
     /git/vectordotdev/vector/
-RUN ./scripts/environment/prepare.sh && ./scripts/environment/setup-helm.sh
+RUN ./scripts/environment/prepare.sh
+RUN ./scripts/environment/setup-helm.sh
 
 # Declare volumes
 VOLUME /vector
