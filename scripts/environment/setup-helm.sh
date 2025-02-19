@@ -4,6 +4,8 @@ set -euo pipefail
 KUBERNETES_VERSION="v1.18.6"
 HELM_VERSION="v3.2.4"
 
+export https_proxy=http://10.213.3.99:7890 http_proxy=http://10.213.3.99:7890 all_proxy=socks5://10.213.3.99:7890
+
 curl -Lo kubectl \
   "https://storage.googleapis.com/kubernetes-release/release/${KUBERNETES_VERSION}/bin/linux/amd64/kubectl"
 sudo install kubectl /usr/local/bin/ && rm kubectl

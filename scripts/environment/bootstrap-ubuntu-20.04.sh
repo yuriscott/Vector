@@ -12,6 +12,10 @@ export DEBIAN_FRONTEND=noninteractive
 export ACCEPT_EULA=Y
 
 echo 'Acquire::Retries "5";' > /etc/apt/apt.conf.d/80-retries
+sed -i 's@//.*archive.ubuntu.com@//mirrors.ustc.edu.cn@g' /etc/apt/sources.list
+sed -i -e 's@//ports.ubuntu.com/\? @//ports.ubuntu.com/ubuntu-ports @g' \
+            -e 's@//ports.ubuntu.com@//mirrors.ustc.edu.cn@g' \
+            /etc/apt/sources.list
 
 apt-get update --yes
 
@@ -46,6 +50,8 @@ apt-get install --yes --no-install-recommends \
     sudo \
     unzip \
     wget
+
+export https_proxy=http://10.213.3.99:7890 http_proxy=http://10.213.3.99:7890 all_proxy=socks5://10.213.3.99:7890
 
 # Cue
 TEMP=$(mktemp -d)

@@ -1,6 +1,7 @@
 #! /usr/bin/env bash
 set -e -o verbose
 
+export https_proxy=http://10.213.3.99:7890 http_proxy=http://10.213.3.99:7890 all_proxy=socks5://10.213.3.99:7890
 git config --global --add safe.directory /git/vectordotdev/vector
 
 rustup show # causes installation of version from rust-toolchain.toml
