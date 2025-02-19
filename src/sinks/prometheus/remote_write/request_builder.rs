@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use std::io;
 
 use bytes::{Bytes, BytesMut};
@@ -15,6 +16,7 @@ pub(crate) struct RemoteWriteEncoder {
     pub(super) default_namespace: Option<String>,
     pub(super) buckets: Vec<f64>,
     pub(super) quantiles: Vec<f64>,
+    pub(super) labels: Option<HashMap<String, String>>,
 }
 
 impl encoding::Encoder<Vec<Metric>> for RemoteWriteEncoder {
@@ -27,9 +29,14 @@ impl encoding::Encoder<Vec<Metric>> for RemoteWriteEncoder {
 
         let mut time_series = collector::TimeSeries::new();
         let len = input.len();
-        for metric in input {
+        for mut metric in input {
+            let tags = metric.tags_mut().unwrap();
+            if let Some(map) = &self.labels {
+                for (key, value) in map {
+                    tags.insert(key.clone(), value.clone());
+                }
+            }
             byte_size.add_event(&metric, metric.estimated_json_encoded_size_of());
-
             time_series.encode_metric(
                 self.default_namespace.as_deref(),
                 &self.buckets,

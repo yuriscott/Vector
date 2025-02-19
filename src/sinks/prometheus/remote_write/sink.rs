@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use std::fmt;
 
 use vector_lib::byte_size_of::ByteSizeOf;
@@ -150,6 +151,7 @@ pub(super) struct RemoteWriteSink<S> {
     pub(super) buckets: Vec<f64>,
     pub(super) quantiles: Vec<f64>,
     pub(super) service: S,
+    pub(super) labels: Option<HashMap<String,String>>
 }
 
 impl<S> RemoteWriteSink<S>
@@ -166,6 +168,7 @@ where
                 default_namespace: self.default_namespace.clone(),
                 buckets: self.buckets.clone(),
                 quantiles: self.quantiles.clone(),
+                labels: self.labels.clone(),
             },
         };
 

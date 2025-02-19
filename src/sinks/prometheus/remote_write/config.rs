@@ -1,5 +1,6 @@
 use http::Uri;
 use snafu::prelude::*;
+use std::collections::HashMap;
 
 use crate::{
     http::HttpClient,
@@ -48,6 +49,20 @@ pub struct RemoteWriteConfig {
     /// The endpoint should include the scheme and the path to write to.
     #[configurable(metadata(docs::examples = "https://localhost:8087/api/v1/write"))]
     pub endpoint: String,
+
+    /// The default labels for any metrics sent.
+    ///
+    /// This namespace is only used if a metric has no existing namespace. When a namespace is
+    /// present, it is used as a prefix to the metric name, and separated with an underscore (`_`).
+    ///
+    /// It should follow the Prometheus [naming conventions][prom_naming_docs].
+    ///
+    /// [prom_naming_docs]: https://prometheus.io/docs/practices/naming/#metric-names
+    #[configurable(derived)]
+    #[configurable(metadata(docs::advanced))]
+    #[serde(default = "default_labels")]
+    #[derivative(Default(value = "default_labels()"))]
+    pub default_labels: Option<HashMap<String, String>>,
 
     /// The default namespace for any metrics sent.
     ///
@@ -123,6 +138,10 @@ const fn default_compression() -> Compression {
     Compression::Snappy
 }
 
+const fn default_labels() -> Option<HashMap<String, String>> {
+    None
+}
+
 impl_generate_config_from_default!(RemoteWriteConfig);
 
 #[async_trait::async_trait]
@@ -139,7 +158,7 @@ impl SinkConfig for RemoteWriteConfig {
         let buckets = self.buckets.clone();
         let quantiles = self.quantiles.clone();
         let default_namespace = self.default_namespace.clone();
-
+        let labels = self.default_labels.clone();
         let client = HttpClient::new(tls_settings, cx.proxy())?;
 
         let auth = match &self.auth {
@@ -203,6 +222,7 @@ impl SinkConfig for RemoteWriteConfig {
             quantiles,
             default_namespace,
             service,
+            labels,
         };
 
         Ok((VectorSink::from_event_streamsink(sink), healthcheck))

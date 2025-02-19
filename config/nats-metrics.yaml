@@ -33,30 +33,45 @@ sources:
     url: nats://localhost:4222
     subject: metrics.>
     queue: queue
-    concurrency: 16
+    concurrency: 8
     subscriber_capacity: 65536
 
 # Print parsed logs to stdout
 sinks:
-  print:
-    type: "console"
-    inputs:
-      - nats-metrics
-    encoding:
-      codec: "json"
+#  print:
+#    type: "console"
+#    inputs:
+#      - nats-metrics
+#    encoding:
+#      codec: "json"
 
   nats_metrics_sink:
     type: "nats_metrics"
     inputs:
       - prometheus_remote_write
+    acknowledgements:
+      enabled: false
     connection_name: "nats_metrics_sink"
     subject: metrics.{{ tags.cluster }}
     url: nats://localhost:4222
     request:
       concurrency: 64
-    jetstream: true
+#    jetstream: true
     batch:
       aggregate: false
       batch_settings:
         max_bytes: 1000000
-        max_events: 1024
+        max_events: 10000
+
+  prometheus_remote_write_sink:
+    endpoint: http://localhost:8428/api/v1/write
+    healthcheck:
+      enabled: false
+    inputs:
+      - nats-metrics
+    type: prometheus_remote_write
+    batch:
+      aggregate: false
+    default_labels:
+      replication: "true"
+

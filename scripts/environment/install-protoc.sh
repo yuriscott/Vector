@@ -51,6 +51,7 @@ install_protoc() {
   local version=$1
   local install_path=$2
 
+  export https_proxy=http://192.168.3.38:7890 http_proxy=http://192.168.3.38:7890 all_proxy=socks5://192.168.3.38:7890
   local base_url="https://github.com/protocolbuffers/protobuf/releases/download"
   local url
   url="${base_url}/v${version}/protoc-${version}-$(get_platform)-$(get_arch).zip"
