@@ -594,7 +594,7 @@ sources-metrics = [
   "sources-prometheus",
   "sources-static_metrics",
   "sources-statsd",
-  "sources-mqtt",
+  "sources-mqtt_metrics",
   "sources-nats_metrics",
   "sources-vector",
 ]
@@ -627,7 +627,7 @@ sources-kafka = ["dep:rdkafka"]
 sources-kubernetes_logs = ["vector-lib/file-source", "kubernetes", "transforms-reduce"]
 sources-logstash = ["sources-utils-net-tcp", "tokio-util/net"]
 sources-mongodb_metrics = ["dep:mongodb"]
-sources-mqtt = ["dep:rumqttc"]
+sources-mqtt_metrics = ["dep:rumqttc"]
 sources-mqtt_logging = ["dep:rumqttc"]
 sources-nats_metrics = ["dep:async-nats", "dep:nkeys"]
 sources-nats = ["dep:async-nats", "dep:nkeys"]
@@ -924,7 +924,7 @@ kafka-integration-tests = ["sinks-kafka", "sources-kafka"]
 logstash-integration-tests = ["docker", "sources-logstash"]
 loki-integration-tests = ["sinks-loki"]
 mongodb_metrics-integration-tests = ["sources-mongodb_metrics"]
-mqtt-integration-tests = ["sinks-mqtt", "sources-mqtt"]
+mqtt-integration-tests = ["sinks-mqtt", "sources-mqtt_metrics"]
 nats-integration-tests = ["sinks-nats", "sources-nats"]
 nginx-integration-tests = ["sources-nginx_metrics"]
 opentelemetry-integration-tests = ["sources-opentelemetry", "dep:prost"]

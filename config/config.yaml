@@ -18,7 +18,7 @@
 # Random Syslog-formatted logs
 sources:
   mqtt-metrics:
-    type: "mqtt"
+    type: "mqtt_metrics"
     host: localhost
     port: 1883
     client_id: mqtt3

@@ -65,7 +65,7 @@ impl Share {
 }
 
 /// Configuration for the `mqtt` source.
-#[configurable_component(source("mqtt", "Collect metrics from MQTT."))]
+#[configurable_component(source("mqtt_metrics", "Collect metrics from MQTT."))]
 #[derive(Clone, Debug, Derivative)]
 #[derivative(Default)]
 #[serde(deny_unknown_fields)]
@@ -147,7 +147,7 @@ fn default_group() -> String {
 }
 
 #[async_trait::async_trait]
-#[typetag::serde(name = "mqtt")]
+#[typetag::serde(name = "mqtt_metrics")]
 impl SourceConfig for MqttSourceConfig {
     async fn build(&self, cx: SourceContext) -> crate::Result<crate::sources::Source> {
         let concurrency = self.concurrency();

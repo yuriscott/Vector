@@ -19,7 +19,7 @@ pub mod http_client;
 #[cfg(any(
     feature = "sources-aws_sqs",
     feature = "sources-gcp_pubsub",
-    feature = "sources-mqtt"
+    feature = "sources-mqtt_metrics"
 ))]
 mod message_decoding;
 pub mod multiline_config;
