@@ -165,7 +165,7 @@ serde = { version = "1.0.217", default-features = false, features = ["alloc", "d
 snafu = { version = "0.7.5", default-features = false, features = ["futures", "std"] }
 tokio = { version = "1.43.0", default-features = false, features = ["full"] }
 toml = { version = "0.8.20", default-features = false, features = ["display", "parse"] }
-tonic = { version = "0.11", default-features = false, features = ["transport", "codegen", "prost", "tls", "tls-roots", "gzip"] }
+tonic = { version = "0.12", default-features = false, features = ["transport", "codegen", "prost", "tls", "tls-roots", "gzip"] }
 tonic-build = { version = "0.11", default-features = false, features = ["transport", "prost"] }
 uuid = { version = "1.12.0", features = ["v4", "v7", "serde"] }
 vector-lib = { path = "lib/vector-lib", default-features = false, features = ["vrl"] }
